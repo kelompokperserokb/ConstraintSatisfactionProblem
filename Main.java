@@ -13,6 +13,7 @@ public class Main
     {
         main = new Main();
         main.Initialize();
+        System.out.println("Bergerak dari kota "+root.name+"\n");
         cspSolving.startCSP(root);
         main.print();
     }
@@ -41,7 +42,7 @@ public class Main
         var.add(SS);
         var.add(L);
 
-        root = A; //For initialize root of CSP
+        root = SU; //For initialize root of CSP
 
         boolean[][] adjacent = {
                 {false,true,false,false,false,false,false,false},
