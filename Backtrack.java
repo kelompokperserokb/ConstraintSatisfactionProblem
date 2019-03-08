@@ -5,32 +5,68 @@ public class Backtrack
 {
     Stack<Variable> tempTrack = new Stack<>();;
 
-    public void backtrack(List<Variable> closedList ){
-        copyList(closedList);
-        backtracking();
-    }
-
-    private void backtracking(){
-        Variable currentNode = tempTrack.pop();
-        if (reColoring(currentNode)) {
-            backtracking();
+    public void backtrack(Stack<Variable> closedList ){
+        Variable firstNode = closedList.pop();
+        tempTrack.push(firstNode);
+        if (!closedList.isEmpty()) backtracking(closedList);
+        if (!tempTrack.isEmpty()) {
+            closedList.push(tempTrack.pop());
         }
     }
 
-    void copyList(List<Variable> closedList){
-        for (Variable node:closedList) {
-            tempTrack.push(node);
+    private void backtracking(Stack<Variable> closedList){
+        if (!closedList.isEmpty()) {
+            Variable currentNode = closedList.pop();
+            tempTrack.push(currentNode);
+            int check = reColoring(currentNode);
+            if (check == 2) {
+                backtracking(closedList);
+            } else if (check == 1) {
+                closedList.push(tempTrack.pop());
+                backtracking(closedList);
+            } else {
+                closedList.push(tempTrack.pop());
+            }
+        } else {
+            System.exit(0);
         }
-        tempTrack.pop();
     }
 
-    boolean reColoring(Variable current){
-        String tempColor = current.color;
-        if (!current.colors.colors.contains(current.color)) current.colors.colors.add(current.color);
+    int reColoring(Variable current){
+        constraint(current);
+        for (String c : current.domain.baseColors){
+            if (!current.domain.constraintColor.contains(c)){
+                current.color = c;
+            }
+        }
+
+        boolean validate = false;
         for (Variable node:current.getAdjacent()) {
-            if (!node.colors.colors.contains(current.color)) node.colors.colors.add(current.color);
+            if (node != current && node.color == current.color) {
+                validate = true;
+                break;
+            }
         }
-        current.color = current.colors.colors.get(0);
-        return current.color.equals(tempColor);
+
+        if ((current.domain.tryColor.contains(current.color) &&
+                (current.domain.tryColor.size() == (current.domain.baseColors.size() - current.domain.constraintColor.size()) ||
+                        0 == (current.domain.baseColors.size() - current.domain.constraintColor.size())))) {
+            current.domain.tryColor.clear();
+            current.color = null;
+            return 2;
+        } else if (current.domain.tryColor.contains(current.color) || validate){
+            current.domain.tryColor.remove(current.color);
+            return 1;
+        } else {
+            if (!current.domain.tryColor.contains(current.color)) current.domain.tryColor.add(current.color);
+            return 0;
+        }
+    }
+
+    public void constraint(Variable currentNode){
+        currentNode.domain.constraintColor.clear();
+        for (Variable adjacent : currentNode.getAdjacent()) {
+            if (adjacent.color != null && adjacent!=currentNode && !currentNode.domain.constraintColor.contains(adjacent.color)) currentNode.domain.constraintColor.add(adjacent.color);;
+        }
     }
 }

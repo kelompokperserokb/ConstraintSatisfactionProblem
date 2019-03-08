@@ -6,11 +6,11 @@ public class Variable {
     public String name;
     public String color;
     public List<Variable> adjacent = new ArrayList<>();
-    public Domain colors;
+    public Domain domain;
 
-    public Variable(String name, Domain colors) {
+    public Variable(String name, Domain domain) {
         this.name = name;
-        this.colors = colors;
+        this.domain = domain;
     }
 
     public void setAdjacent(Variable adjacent){

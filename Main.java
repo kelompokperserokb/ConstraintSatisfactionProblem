@@ -41,7 +41,7 @@ public class Main
         var.add(SS);
         var.add(L);
 
-        root = A;
+        root = A; //For initialize root of CSP
 
         boolean[][] adjacent = {
                 {false,true,false,false,false,false,false,false},
@@ -52,7 +52,8 @@ public class Main
                 {false,false,false,true,true,false,true,false},
                 {false,false,false,false,true,true,false,true},
                 {false,false,false,false,false,false,true,false},
-        };
+        }; //For connecting node (Adjacency Matrix)
+
         graph.setAdjacent(adjacent);
     }
 

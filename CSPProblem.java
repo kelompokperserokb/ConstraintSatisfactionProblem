@@ -12,29 +12,52 @@ public class CSPProblem
         while(!openList.isEmpty()){
             currentNode = openList.pop();
             closedList.push(currentNode);
-            for (Variable current : currentNode.getAdjacent()) {
-                if (!openList.contains(current) && !closedList.contains(current)) {
-                    openList.push(current);
-                }
-            }
+            constraint(currentNode);
 
             if (canColoring(currentNode)) {
+                getAdjacent(currentNode);
                 coloringMap(currentNode);
             } else {
                 backtrack.backtrack(closedList);
+                if (!openList.contains(currentNode) && !closedList.contains(currentNode)) openList.push(currentNode);
+                openList.push(closedList.pop());
             }
         }
     }
 
+    public void getAdjacent(Variable currentNode){
+        for (Variable current : currentNode.getAdjacent()) {
+            if (!openList.contains(current) && !closedList.contains(current)) {
+                openList.push(current);
+            }
+        }
+    }
+
+
     public boolean canColoring(Variable currentNode){
-        return !currentNode.colors.colors.isEmpty();
+        for(String color : currentNode.domain.baseColors) {
+            if (!currentNode.domain.constraintColor.contains(color)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void coloringMap(Variable currentNode){
-        currentNode.color = currentNode.colors.colors.get(0);
-        currentNode.colors.colors.remove(currentNode.color);
+        for (String c : currentNode.domain.baseColors){
+            if (!currentNode.domain.constraintColor.contains(c)){
+                currentNode.color = c;
+                currentNode.domain.tryColor.add(currentNode.color);
+                break;
+            }
+        }
+
+    }
+
+    public void constraint(Variable currentNode){
+        currentNode.domain.constraintColor.clear();
         for (Variable adjacent : currentNode.getAdjacent()) {
-            adjacent.colors.colors.remove(currentNode.color);
+            if (adjacent.color != null && adjacent!=currentNode && !currentNode.domain.constraintColor.contains(adjacent.color)) currentNode.domain.constraintColor.add(adjacent.color);
         }
     }
 
