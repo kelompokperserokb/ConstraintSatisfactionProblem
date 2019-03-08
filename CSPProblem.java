@@ -19,7 +19,9 @@ public class CSPProblem
                 coloringMap(currentNode);
             } else {
                 backtrack.backtrack(closedList);
-                if (!openList.contains(currentNode) && !closedList.contains(currentNode)) openList.push(currentNode);
+                if (!openList.contains(currentNode) && !closedList.contains(currentNode)) {
+                    openList.push(currentNode);
+                }
                 openList.push(closedList.pop());
             }
         }
@@ -32,7 +34,6 @@ public class CSPProblem
             }
         }
     }
-
 
     public boolean canColoring(Variable currentNode){
         for(String color : currentNode.domain.baseColors) {
@@ -57,9 +58,9 @@ public class CSPProblem
     public void constraint(Variable currentNode){
         currentNode.domain.constraintColor.clear();
         for (Variable adjacent : currentNode.getAdjacent()) {
-            if (adjacent.color != null && adjacent!=currentNode && !currentNode.domain.constraintColor.contains(adjacent.color)) currentNode.domain.constraintColor.add(adjacent.color);
+            if (adjacent.color != null && adjacent!=currentNode && !currentNode.domain.constraintColor.contains(adjacent.color)) {
+                currentNode.domain.constraintColor.add(adjacent.color);
+            }
         }
     }
-
-
 }
